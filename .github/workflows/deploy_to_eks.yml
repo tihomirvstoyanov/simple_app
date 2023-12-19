@@ -1,0 +1,23 @@
+name: Deploy to AWS EKS
+
+on:
+  push:
+    paths:
+      - 'helm/**'  # Helm chart under the 'helm/' directory
+
+jobs:
+  deploy-to-eks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to AWS EKS
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          KUBE_NAMESPACE: "your-namespace" # to be defined
+          KUBE_CLUSTER_NAME: "your-cluster-name" # to be defined
+          KUBE_REGION: "your-region" # to be defined
+          HELM_RELEASE_NAME: "my-python-app"
+        run: |
+          echo "$KUBE_CONFIG_DATA" | base64 -d > kubeconfig.yaml
+          kubectl config use-context $KUBE_CLUSTER_NAME
+          helm upgrade --install $HELM_RELEASE_NAME helm/ --namespace $KUBE_NAMESPACE --values helm/values.yaml

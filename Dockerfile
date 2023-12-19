@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM tihomirvstoyanov/initial_registry:0.1
 
 WORKDIR /app
 

@@ -1,0 +1,29 @@
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    paths:
+      - 'Dockerfile'
+      - 'src/**'  # application code under '/src' directory
+
+jobs:
+ build-and-push-to-docker-hub:
+   runs-on: ubuntu-latest
+
+   steps:
+     - name: Checkout Repository
+       uses: actions/checkout@v2
+
+     - name: Set up Python
+       uses: actions/setup-python@v2
+       with:
+         python-version: 3.10
+
+     - name: Build and Push Docker Image
+       env:
+         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+       run: |
+         docker build -t tihomirvstoyanov/initial_registry:latest .
+         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+         docker push tihomirvstoyanov/initial_registry:latest
