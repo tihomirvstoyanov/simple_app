@@ -1,4 +1,4 @@
-FROM tihomirvstoyanov/initial_registry:0.1
+FROM tihomirvstoyanov/initial_registry:latest
 
 WORKDIR /app
 
