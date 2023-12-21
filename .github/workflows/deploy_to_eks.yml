@@ -10,13 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Set your AWS region
+
+      - name: Get Cluster Details
+        id: cluster-details
+        run: |
+          echo "::set-output name=namespace::default"
+          echo "::set-output name=region::us-east-1"
+          echo "::set-output name=helm-release::flask-app-chart"
+
       - name: Deploy to AWS EKS
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBE_NAMESPACE: "your-namespace" # to be defined
-          KUBE_CLUSTER_NAME: "your-cluster-name" # to be defined
-          KUBE_REGION: "your-region" # to be defined
-          HELM_RELEASE_NAME: "my-python-app"
+          KUBE_NAMESPACE: ${{ steps.cluster-details.outputs.namespace }}
+          KUBE_CLUSTER_NAME: ${{ secrets.KUBE_CLUSTER_NAME }}
+          KUBE_REGION: ${{ steps.cluster-details.outputs.region }}
+          HELM_RELEASE_NAME: ${{ steps.cluster-details.outputs.helm-release }}
         run: |
           echo "$KUBE_CONFIG_DATA" | base64 -d > kubeconfig.yaml
           kubectl config use-context $KUBE_CLUSTER_NAME
