@@ -26,19 +26,15 @@ jobs:
           version: '1.24.0' # Specify the desired version
         id: install-kubectl
 
-      - name: Set Kubernetes Context
-        run: |
-        kubectl config set-cluster $KUBE_CLUSTER_NAME --server=https://$KUBE_CLUSTER_NAME.amazonaws.com
-        kubectl config set-context $KUBE_CLUSTER_NAME --cluster=$KUBE_CLUSTER_NAME
-        kubectl config use-context $KUBE_CLUSTER_NAME
-
-
       - name: Get Cluster Details
         id: cluster-details
         run: |
           echo "::set-output name=namespace::default"
           echo "::set-output name=region::us-east-1"
           echo "::set-output name=helm-release::flask-app-chart"
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name sample
 
       - name: Deploy to AWS EKS
         env:
@@ -48,5 +44,4 @@ jobs:
           KUBE_REGION: ${{ steps.cluster-details.outputs.region }}
           HELM_RELEASE_NAME: ${{ steps.cluster-details.outputs.helm-release }}
         run: |
-          echo "$KUBE_CONFIG_DATA" | base64 -d > kubeconfig.yaml
           helm upgrade --install $HELM_RELEASE_NAME helm/ --namespace $KUBE_NAMESPACE --values helm/values.yaml
