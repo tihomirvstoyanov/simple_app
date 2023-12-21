@@ -43,4 +43,4 @@ jobs:
         KUBE_REGION: ${{ steps.cluster-details.outputs.region }}
         HELM_RELEASE_NAME: ${{ steps.cluster-details.outputs.helm-release }}
       run: |
-        helm upgrade --install $HELM_RELEASE_NAME helm/ --namespace $KUBE_NAMESPACE --values helm/flask-app-chart/values.yaml
+        helm upgrade --install $HELM_RELEASE_NAME helm/flask-app-chart --namespace $KUBE_NAMESPACE --values helm/flask-app-chart/values.yaml
