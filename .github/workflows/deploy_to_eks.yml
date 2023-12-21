@@ -6,12 +6,11 @@ on:
       - 'helm/**'  # Helm chart under the 'helm/' directory
 
 jobs:
-  deploy-to-eks:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout Repository
+      uses: actions/checkout@v3
 
     - name: Install kubectl
       uses: azure/setup-kubectl@v2.0
@@ -35,7 +34,7 @@ jobs:
 
     - name: Update kube config
       run: aws eks update-kubeconfig --name sample
-      
+
     - name: Deploy to AWS EKS
       env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
