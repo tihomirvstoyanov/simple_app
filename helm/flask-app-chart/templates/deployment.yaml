@@ -1,0 +1,23 @@
+# templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ template "flask-app-chart.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "flask-app-chart.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "flask-app-chart.name" . }}
+    spec:
+      containers:
+        - name: {{ .Values.container.name }}
+          image: {{ .Values.container.image }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.container.port }}

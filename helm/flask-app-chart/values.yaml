@@ -1,0 +1,12 @@
+# values.yaml
+replicaCount: 2
+
+service:
+  port: 3000
+  targetPort: 3000
+  type: LoadBalancer
+
+container:
+  name: flask-app
+  image: tihomirvstoyanov/initial_registry:latest
+  port: 3000
