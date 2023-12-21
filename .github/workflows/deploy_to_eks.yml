@@ -26,22 +26,22 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
 
-      - name: Get Cluster Details
-        id: cluster-details
-        run: |
-          echo "::set-output name=namespace::default"
-          echo "::set-output name=region::us-east-1"
-          echo "::set-output name=helm-release::flask-app-chart"
+    - name: Get Cluster Details
+      id: cluster-details
+      run: |
+        echo "::set-output name=namespace::default"
+        echo "::set-output name=region::us-east-1"
+        echo "::set-output name=helm-release::flask-app-chart"
 
-      - name: Update kube config
-        run: aws eks update-kubeconfig --name sample
-
-      - name: Deploy to AWS EKS
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-          KUBE_NAMESPACE: ${{ steps.cluster-details.outputs.namespace }}
-          KUBE_CLUSTER_NAME: ${{ secrets.KUBE_CLUSTER_NAME }}
-          KUBE_REGION: ${{ steps.cluster-details.outputs.region }}
-          HELM_RELEASE_NAME: ${{ steps.cluster-details.outputs.helm-release }}
-        run: |
-          helm upgrade --install $HELM_RELEASE_NAME helm/ --namespace $KUBE_NAMESPACE --values helm/values.yaml
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name sample
+      
+    - name: Deploy to AWS EKS
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+        KUBE_NAMESPACE: ${{ steps.cluster-details.outputs.namespace }}
+        KUBE_CLUSTER_NAME: ${{ secrets.KUBE_CLUSTER_NAME }}
+        KUBE_REGION: ${{ steps.cluster-details.outputs.region }}
+        HELM_RELEASE_NAME: ${{ steps.cluster-details.outputs.helm-release }}
+      run: |
+        helm upgrade --install $HELM_RELEASE_NAME helm/ --namespace $KUBE_NAMESPACE --values helm/values.yaml
