@@ -20,6 +20,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  # Set your AWS region
 
+      - name: Install kubectl
+        uses: weaveworks/kubectl@v1
+        with:
+          version: '1.24.0' # Specify the desired version
+        id: install-kubectl
+
       - name: Get Cluster Details
         id: cluster-details
         run: |
