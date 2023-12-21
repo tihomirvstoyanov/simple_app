@@ -33,7 +33,7 @@ jobs:
         echo "::set-output name=helm-release::flask-app-chart"
 
     - name: Update kube config
-      run: aws eks update-kubeconfig --name sample
+      run: aws eks update-kubeconfig --name guru-eks-aCRbZfa5
 
     - name: Deploy to AWS EKS
       env:
